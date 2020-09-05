@@ -25,16 +25,21 @@ with open(args.input_json, "r") as json_file:
         json.loads(json_file.read(), object_hook=lambda d: SimpleNamespace(**d))
     )
 
+    print("Found:")
+    print("%d labels" % len(board.labels))
+    print("%d stacks" % len(board.stacks))
+    print("%d cards (archived and non-archived)" % sum(len(stack.cards) for stack in board.stacks))
+
     api = DeckAPI(args.nextcloud_instance, (args.username, args.password))
 
     createdBoard = api.createBoard(board.title, board.color)
     nextcloudBoardId = createdBoard['id']
-    print('Created board %s on %s' % (createdBoard['title'], args.nextcloud_instance))
+    print('Created board %s at %s' % (createdBoard['title'], "%s/index.php/apps/deck/#/board/%d" % (args.nextcloud_instance, nextcloudBoardId)))
 
     nextcloudLabelIds = {}
 
     for i, label in enumerate(board.labels):
-        createdLabel = api.createLabel(label.name if len(label.name) > 0 else "Label %d" % (i + 1), label.color, nextcloudBoardId)
+        createdLabel = api.createLabel(label.name, label.color, nextcloudBoardId)
         nextcloudLabelIds[label.trelloId] = createdLabel['id']
         print('Created label %s' % label.name)
 
@@ -68,11 +73,11 @@ with open(args.input_json, "r") as json_file:
 
             api.commentOnCard(nextcloudCardId, "Migrated from Trello: %s" % card.trelloUrl)
 
-            print('Created card %s' % card.name)
+            print('\tCreated card %s' % card.name)
             
             for label in card.labels:
                 api.assignLabel(nextcloudLabelIds[label.trelloId], nextcloudCardId, nextcloudBoardId, nextcloudStackId)
-                print('Assigned label %s to card %s' % (label.name, card.name))
+                print('\t\tAssigned label %s to card %s' % (label.name, card.name))
 
             # if card.archived:
             #     api.archiveCard(createdCard, nextcloudBoardId, nextcloudCardId)

@@ -125,8 +125,8 @@ def get_cards_by_stack(cards, checklists, labels, trello_stack_id):
 def to_board(trello_json):
     labels = list(
         map(
-            lambda label: Label(label.id, label.name, color_map[label.color]),
-            trello_json.labels,
+            lambda tuple: Label(tuple[1].id, tuple[1].name if len(tuple[1].name) > 0 else "Label %d" % (tuple[0] + 1), color_map[tuple[1].color]),
+            enumerate(trello_json.labels),
         )
     )
 
