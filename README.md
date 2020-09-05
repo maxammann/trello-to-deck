@@ -29,6 +29,7 @@ You have to provde the arguments `input_json` e.g. `trello.json`, `nextcloud_ins
 * Checklists (yes they are supported by Deck!)
 * Due-date
 * Order of Stacks, Cards, Checklists etc.
+* Link/Reference to the original trello card (as comment)
 
 ## MUST READ: What is NOT migrated?
 
@@ -36,3 +37,6 @@ You have to provde the arguments `input_json` e.g. `trello.json`, `nextcloud_ins
   I have over 2000 archived cards in my personal Trello. Right now Deck can not handle this amount. Therefore currenlty no archived cards are migrated!
 * Assigning the correct people on the cards. Only the creating account is assigned right now.
 * Attachments
+* Votes
+* Comments on cards
+* Background
