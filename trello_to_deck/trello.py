@@ -1,10 +1,6 @@
 from dataclasses import dataclass
 from typing import List
-import argparse
 import dateutil.parser
-import json
-from types import SimpleNamespace
-from deck import DeckAPI
 
 color_map = {
     "green": "49b675",
@@ -67,7 +63,9 @@ class Board:
     labels: List[Label]
     stacks: Stack
 
+
 # TODO: Assign correct users
+
 
 def get_checklist_by_card(checklists, card_id):
     checklists = filter(lambda checklist: checklist.idCard == card_id, checklists)
@@ -115,7 +113,7 @@ def get_cards_by_stack(cards, checklists, labels, trello_stack_id):
                     card.pos,
                     get_checklist_by_card(checklists, card.id),
                     get_label_ids(labels, card.idLabels),
-                    card.shortUrl
+                    card.shortUrl,
                 ),
                 cards,
             ),
@@ -152,69 +150,3 @@ def to_board(trello_json):
     return Board(
         trello_json.name, color_map[trello_json.prefs.background], labels, lists
     )
-
-
-parser = argparse.ArgumentParser(
-    description="Parses a Trello export and creates boards in Nextcloud Deck"
-)
-parser.add_argument(
-    "input_json",
-    type=str,
-    help="the json input file. Downloaded from https://trello.com/b/XYZ.json",
-)
-parser.add_argument("nextcloud_instance", type=str, help="the Nextcloud instance")
-parser.add_argument("username", type=str, help="the Nextcloud username")
-parser.add_argument("password", type=str, help="the Nextcloud password")
-args = parser.parse_args()
-
-print(args.nextcloud_instance)
-
-with open(args.input_json, "r") as json_file:
-    board: Board = to_board(
-        json.loads(json_file.read(), object_hook=lambda d: SimpleNamespace(**d))
-    )
-
-    api = DeckAPI(args.nextcloud_instance, (args.username, args.password))
-
-    createdBoard = api.createBoard(board.title, board.color)
-    nextcloudBoardId = createdBoard['id']
-    print('Created board', createdBoard['title'])
-
-    nextcloudLabelIds = {}
-
-    for i, label in enumerate(board.labels):
-        createdLabel = api.createLabel(label.name if len(label.name) > 0 else "Label %d" % (i + 1), label.color, nextcloudBoardId)
-        nextcloudLabelIds[label.trelloId] = createdLabel['id']
-
-    for stack in board.stacks:
-        createdStack = api.createStack(stack.name, stack.order, nextcloudBoardId)
-        nextcloudStackId = createdStack['id']
-
-        for card in stack.cards:
-            if not card.archived:
-                checklistMarkdown = ""
-                if card.checklists:
-                    checklistMarkdown = "\n\n\n"
-
-                    checklistMarkdown += "## Checklists\n\n"
-
-                    for checklist in card.checklists:
-                        checklistMarkdown += "### %s\n\n" % checklist.name
-
-                        for item in checklist.items:
-                            checked = "x" if item.completed else " "
-                            checklistMarkdown += "- [%s] %s\n" % (checked, item.name)
-
-                        checklistMarkdown += "\n"
-
-                createdCard = api.createCard(card.name, "plain", card.order, "%s%s" % (card.description, checklistMarkdown), card.due_date, nextcloudBoardId, nextcloudStackId)
-                nextcloudCardId = createdCard['id']
-                for label in card.labels:
-                    api.assignLabel(nextcloudLabelIds[label.trelloId], nextcloudCardId, nextcloudBoardId, nextcloudStackId)
-                    
-                api.commentOnCard(nextcloudCardId, "Migrated from Trello: %s" % card.trelloUrl)
-
-
-            # if card.archived:
-            #     api.archiveCard(createdCard, nextcloudBoardId, nextcloudCardId)
-
