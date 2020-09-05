@@ -5,7 +5,7 @@ setup(
     version='0.1',
     packages=find_packages(where='trello-to-deck'),
     url='https://github.com/maxammann/trello-to-deck',
-    license='',
+    license='MIT',
     author='maxammann',
     author_email='max@maxammann.org',
     description='',
