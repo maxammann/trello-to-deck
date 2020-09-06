@@ -47,6 +47,7 @@ class Card:
     checklists: List[Checklist]
     labels: List[Label]
     trelloUrl: str
+    comments: List[str]
 
 
 @dataclass
@@ -94,11 +95,16 @@ def get_checklist_by_card(checklists, card_id):
     )
 
 
+def get_comments_by_card(actions, trello_card_id):
+    commentCardActions = filter(lambda action: action.type == 'commentCard' and action.data.card.id == trello_card_id, actions)
+    comments = map(lambda action: action.data.text, commentCardActions)
+    return comments
+
 def get_label_ids(labels, label_ids):
     return list(filter(lambda label: label.trelloId in label_ids, labels))
 
 
-def get_cards_by_stack(cards, checklists, labels, trello_stack_id):
+def get_cards_by_stack(cards, checklists, actions, labels, trello_stack_id):
     cards = filter(lambda card: card.idList == trello_stack_id, cards)
     return list(
         sorted(
@@ -114,6 +120,7 @@ def get_cards_by_stack(cards, checklists, labels, trello_stack_id):
                     get_checklist_by_card(checklists, card.id),
                     get_label_ids(labels, card.idLabels),
                     card.shortUrl,
+                    get_comments_by_card(actions, card.id)
                 ),
                 cards,
             ),
@@ -138,7 +145,7 @@ def to_board(trello_json):
                     stack.name,
                     stack.pos,
                     get_cards_by_stack(
-                        trello_json.cards, trello_json.checklists, labels, stack.id
+                        trello_json.cards, trello_json.checklists, trello_json.actions, labels, stack.id
                     ),
                 ),
                 not_closed_stacks,
