@@ -16,7 +16,7 @@ pip install .
 
 ## Usage example
 
-First get a JSON export of your Trello board as described [here](https://help.trello.com/article/747-exporting-data-from-trello-1) and save it as trello.json
+First get a JSON export of your Trello board as described [here](https://help.trello.com/article/747-exporting-data-from-trello-1) and save it as trello.json. Make sure not to delete the board before the migration. Else all attachments are lost!
 
 Then simply invoke the CLI tool `trello-to-deck`:
 
