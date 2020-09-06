@@ -3,7 +3,8 @@
 
 trello-to-deck reads from an JSON export of Trello and creates a board in [Nextcloud Deck](https://apps.nextcloud.com/apps/deck).
 
-[![asciicast](https://asciinema.org/a/WRXxO7cLLXfAj37lFjAi0IrX5.svg)](https://asciinema.org/a/WRXxO7cLLXfAj37lFjAi0IrX5)
+![](./docs/demo.gif)
+
 
 ![](./docs/screenshot.png)
 

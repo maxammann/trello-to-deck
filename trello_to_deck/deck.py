@@ -2,7 +2,7 @@ import requests
 
 headers = {"OCS-APIRequest": "true", "Content-Type": "application/json"}
 
-
+# The API is implemented as documented here: https://deck.readthedocs.io/en/latest/API/
 class DeckAPI:
     def __init__(self, url, auth):
         self.url = url
