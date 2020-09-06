@@ -115,6 +115,7 @@ class DeckAPI:
         )
 
     def archiveCard(self, card, boardId, stackId):
+        card['archived'] = True
         self.put(
             f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/{stackId}/cards/{card['id']}",
             card,
