@@ -57,7 +57,7 @@ with open(args.input_json, "r") as json_file:
         print('Created stack %s' % stack.name)
 
         for card in stack.cards:
-            if card.archived:
+            if card.archived and (card.description == "" and not card.attachments and not card.comments):
                 continue
 
             checklistMarkdown = ""
