@@ -14,7 +14,9 @@ class DeckAPI:
             auth=self.auth,
             headers=headers,
         )
-        response.raise_for_status()
+        if response.status_code != requests.codes.ok:
+            print(f"The response was: {response.content}")
+            response.raise_for_status()
         return response
 
     def post(self, route, json):
@@ -24,7 +26,9 @@ class DeckAPI:
             json=json,
             headers=headers,
         )
-        response.raise_for_status()
+        if response.status_code != requests.codes.ok:
+            print(f"The response was: {response.content}")
+            response.raise_for_status()
         return response
 
     def postFiles(self, route, data, files):
@@ -35,7 +39,9 @@ class DeckAPI:
             files=files,
             headers=headers,
         )
-        response.raise_for_status()
+        if response.status_code != requests.codes.ok:
+            print(f"The response was: {response.content}")
+            response.raise_for_status()
         return response
 
     def put(self, route, json):
@@ -45,7 +51,9 @@ class DeckAPI:
             json=json,
             headers=headers,
         )
-        response.raise_for_status()
+        if response.status_code != requests.codes.ok:
+            print(f"The response was: {response.content}")
+            response.raise_for_status()
         return response
 
     def delete(self, route):
@@ -54,7 +62,11 @@ class DeckAPI:
             auth=self.auth,
             headers=headers,
         )
-        response.raise_for_status()
+
+        if response.status_code != requests.codes.ok:
+            print(f"The response was: {response.conten}")
+            response.raise_for_status()
+
         return response
 
     def getBoards(self):
