@@ -57,7 +57,7 @@ with open(args.input_json, "r") as json_file:
         print('Created stack %s' % stack.name)
 
         for card in stack.cards:
-            if card.archived and (card.description == "" and not card.attachments and not card.comments):
+            if card.archived and (not card.checklists and card.description == "" and not card.attachments and not card.comments):
                 continue
 
             checklistMarkdown = ""
@@ -89,16 +89,13 @@ with open(args.input_json, "r") as json_file:
                 print('\t\tAssigned label %s to card %s' % (label.name, card.name))
 
             if card.attachments:
-                #with tempfile.TemporaryDirectory() as tmpdirname:
-                #tmpdirname = tempfile.TemporaryDirectory()
-                if True:
-                    #print(tmpdirname)
-                    for attachment in card.attachments:
-                        url = attachment.url
-                        response = requests.get(url, stream=True)
-                        api.attachToCard(nextcloudBoardId, nextcloudStackId, nextcloudCardId, attachment.fileName, response.raw, attachment.mimeType)
+                for attachment in card.attachments:
+                    url = attachment.url
+                    response = requests.get(url, stream=True)
+                    api.attachToCard(nextcloudBoardId, nextcloudStackId, nextcloudCardId, attachment.fileName, response.raw, attachment.mimeType)
 
             if card.archived:
                 api.archiveCard(createdCard, nextcloudBoardId, nextcloudCardId)
+                
     print("Successfully migrated to Deck!")
 
