@@ -122,7 +122,7 @@ def get_cards_by_stack(cards, checklists, actions, labels, trello_stack_id):
                     get_label_ids(labels, card.idLabels),
                     card.shortUrl,
                     get_comments_by_card(actions, card.id),
-                    list(map(lambda attachment: Attachment(attachment.fileName, attachment.url, attachment.mimeType), card.attachments))
+                    list(map(lambda attachment: Attachment(attachment.fileName, attachment.url, attachment.mimeType), filter(lambda attachment: attachment.isUpload, card.attachments)))
                 ),
                 cards,
             ),
