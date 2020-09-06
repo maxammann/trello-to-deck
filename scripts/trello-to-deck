@@ -68,10 +68,12 @@ with open(args.input_json, "r") as json_file:
 
                     checklistMarkdown += "\n"
 
-            createdCard = api.createCard(card.name, "plain", card.order, "%s%s" % (card.description, checklistMarkdown), card.due_date, nextcloudBoardId, nextcloudStackId)
+            migrationText = "Migrated from Trello: %s\n" % card.trelloUrl
+            createdCard = api.createCard(card.name, "plain", card.order, "%s%s%s" % (migrationText, card.description, checklistMarkdown), card.due_date, nextcloudBoardId, nextcloudStackId)
             nextcloudCardId = createdCard['id']
 
-            api.commentOnCard(nextcloudCardId, "Migrated from Trello: %s" % card.trelloUrl)
+            for comment in card.comments:
+                api.commentOnCard(nextcloudCardId, comment)
 
             print('\tCreated card %s' % card.name)
             

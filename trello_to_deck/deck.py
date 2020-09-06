@@ -8,123 +8,109 @@ class DeckAPI:
         self.url = url
         self.auth = auth
 
-    def getBoards(self):
+    def get(self, route):
         response = requests.get(
-            f"{self.url}/index.php/apps/deck/api/v1.0/boards",
+            f"{self.url}{route}",
             auth=self.auth,
             headers=headers,
         )
         response.raise_for_status()
-        return response.json()
+        return response
+
+    def post(self, route, json):
+        response = requests.post(
+            f"{self.url}{route}",
+            auth=self.auth,
+            json=json,
+            headers=headers,
+        )
+        response.raise_for_status()
+        return response
+
+    def put(self, route, json):
+        response = requests.put(
+            f"{self.url}{route}",
+            auth=self.auth,
+            json=json,
+            headers=headers,
+        )
+        response.raise_for_status()
+        return response
+
+    def delete(self, route):
+        response = requests.delete(
+            f"{self.url}{route}",
+            auth=self.auth,
+            headers=headers,
+        )
+        response.raise_for_status()
+        return response
+
+    def getBoards(self):
+        return self.get(f"/index.php/apps/deck/api/v1.0/boards").json()
 
     def getBoardDetails(self, boardId):
-        response = requests.get(
-            f"{self.url}/index.php/apps/deck/api/v1.0/boards/{boardId}",
-            auth=self.auth,
-            headers=headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        return self.get(f"/index.php/apps/deck/api/v1.0/boards/{boardId}").json()
 
     def getStacks(self, boardId):
-        response = requests.get(
-            f"{self.url}/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks",
-            auth=self.auth,
-            headers=headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        return self.get(f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks").json()
 
     def getStacksArchived(self, boardId):
-        response = requests.get(
-            f"{self.url}/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/archived",
-            auth=self.auth,
-            headers=headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        return self.get(
+            f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/archived"
+        ).json()
 
     def createBoard(self, title, color):
-        response = requests.post(
-            f"{self.url}/index.php/apps/deck/api/v1.0/boards",
-            auth=self.auth,
-            json={"title": title, "color": color},
-            headers=headers,
-        )
-        response.raise_for_status()
-        board = response.json()
+        board = self.post(
+            "/index.php/apps/deck/api/v1.0/boards", {"title": title, "color": color}
+        ).json()
         boardId = board["id"]
         # remove all default labels
         for label in board["labels"]:
             labelId = label["id"]
-            response = requests.delete(
-                f"{self.url}/index.php/apps/deck/api/v1.0/boards/{boardId}/labels/{labelId}",
-                auth=self.auth,
-                headers=headers,
+            self.delete(
+                f"/index.php/apps/deck/api/v1.0/boards/{boardId}/labels/{labelId}"
             )
-            response.raise_for_status()
         return board
 
     def createLabel(self, title, color, boardId):
-        response = requests.post(
-            f"{self.url}/index.php/apps/deck/api/v1.0/boards/{boardId}/labels",
-            auth=self.auth,
-            json={"title": title, "color": color},
-            headers=headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        return self.post(
+            f"/index.php/apps/deck/api/v1.0/boards/{boardId}/labels",
+            {"title": title, "color": color},
+        ).json()
 
     def createStack(self, title, order, boardId):
-        response = requests.post(
-            f"{self.url}/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks",
-            auth=self.auth,
-            json={"title": title, "order": order},
-            headers=headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        return self.post(
+            f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks",
+            {"title": title, "order": order},
+        ).json()
 
     def createCard(self, title, ctype, order, description, duedate, boardId, stackId):
-        response = requests.post(
-            f"{self.url}/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/{stackId}/cards",
-            auth=self.auth,
-            json={
+        return self.post(
+            f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/{stackId}/cards",
+            {
                 "title": title,
                 "type": ctype,
                 "order": order,
                 "description": description,
                 "duedate": duedate.isoformat() if duedate is not None else None,
             },
-            headers=headers,
-        )
-        response.raise_for_status()
-        return response.json()
+        ).json()
 
     def assignLabel(self, labelId, cardId, boardId, stackId):
-        response = requests.put(
-            f"{self.url}/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/{stackId}/cards/{cardId}/assignLabel",
-            auth=self.auth,
-            json={"labelId": labelId},
-            headers=headers,
+        self.put(
+            f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/{stackId}/cards/{cardId}/assignLabel",
+            {"labelId": labelId},
         )
-        response.raise_for_status()
 
     def archiveCard(self, card, boardId, stackId):
-        cardId = card["id"]
-        response = requests.put(
-            f"{self.url}/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/{stackId}/cards/{cardId}",
-            auth=self.auth,
-            json=card,
-            headers=headers,
+        self.put(
+            f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/{stackId}/cards/{cardId}",
+            card,
         )
-        response.raise_for_status()
 
     def commentOnCard(self, cardId, message, parentId=None):
-        response = requests.post(
-            f"{self.url}/ocs/v2.php/apps/deck/api/v1.0/cards/{cardId}/comments",
-            auth=self.auth,
-            json={"message": message, "parentId": parentId},
-            headers=headers,
+        self.post(
+            f"/ocs/v2.php/apps/deck/api/v1.0/cards/{cardId}/comments",
+            {"message": message, "parentId": parentId},
         )
-        response.raise_for_status()
