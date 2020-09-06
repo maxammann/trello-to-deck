@@ -83,4 +83,5 @@ with open(args.input_json, "r") as json_file:
 
             # if card.archived:
             #     api.archiveCard(createdCard, nextcloudBoardId, nextcloudCardId)
+    print("Successfully migrated to Deck!")
 
