@@ -4,10 +4,9 @@ headers = {"OCS-APIRequest": "true", "Content-Type": "application/json"}
 
 
 class DeckAPI:
-    def __init__(self, url, auth, dry_run):
+    def __init__(self, url, auth):
         self.url = url
         self.auth = auth
-        self.dry_run = dry_run
 
     def get(self, route):
         response = requests.get(
@@ -16,12 +15,9 @@ class DeckAPI:
             headers=headers,
         )
         response.raise_for_status()
-        return response.json()
+        return response
 
     def post(self, route, json):
-        if self.dry_run:
-            return ""
-
         response = requests.post(
             f"{self.url}{route}",
             auth=self.auth,
@@ -29,12 +25,9 @@ class DeckAPI:
             headers=headers,
         )
         response.raise_for_status()
-        return response.json()
+        return response
 
     def put(self, route, json):
-        if self.dry_run:
-            return ""
-
         response = requests.put(
             f"{self.url}{route}",
             auth=self.auth,
@@ -42,38 +35,35 @@ class DeckAPI:
             headers=headers,
         )
         response.raise_for_status()
-        return response.json()
+        return response
 
     def delete(self, route):
-        if self.dry_run:
-            return ""
-
-        response = requests.put(
+        response = requests.delete(
             f"{self.url}{route}",
             auth=self.auth,
             headers=headers,
         )
         response.raise_for_status()
-        return response.json()
+        return response
 
     def getBoards(self):
-        return self.get(f"/index.php/apps/deck/api/v1.0/boards")
+        return self.get(f"/index.php/apps/deck/api/v1.0/boards").json()
 
     def getBoardDetails(self, boardId):
-        return self.get(f"/index.php/apps/deck/api/v1.0/boards/{boardId}")
+        return self.get(f"/index.php/apps/deck/api/v1.0/boards/{boardId}").json()
 
     def getStacks(self, boardId):
-        return self.get(f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks")
+        return self.get(f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks").json()
 
     def getStacksArchived(self, boardId):
         return self.get(
             f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/archived"
-        )
+        ).json()
 
     def createBoard(self, title, color):
         board = self.post(
             "/index.php/apps/deck/api/v1.0/boards", {"title": title, "color": color}
-        )
+        ).json()
         boardId = board["id"]
         # remove all default labels
         for label in board["labels"]:
@@ -87,13 +77,13 @@ class DeckAPI:
         return self.post(
             f"/index.php/apps/deck/api/v1.0/boards/{boardId}/labels",
             {"title": title, "color": color},
-        )
+        ).json()
 
     def createStack(self, title, order, boardId):
         return self.post(
             f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks",
             {"title": title, "order": order},
-        )
+        ).json()
 
     def createCard(self, title, ctype, order, description, duedate, boardId, stackId):
         return self.post(
@@ -105,7 +95,7 @@ class DeckAPI:
                 "description": description,
                 "duedate": duedate.isoformat() if duedate is not None else None,
             },
-        )
+        ).json()
 
     def assignLabel(self, labelId, cardId, boardId, stackId):
         self.put(
