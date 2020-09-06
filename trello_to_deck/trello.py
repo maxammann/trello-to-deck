@@ -36,6 +36,11 @@ class Label:
     name: str
     color: str
 
+@dataclass
+class Attachment:
+    fileName: str
+    url: str
+    mimeType: str
 
 @dataclass
 class Card:
@@ -48,7 +53,7 @@ class Card:
     labels: List[Label]
     trelloUrl: str
     comments: List[str]
-
+    attachments: List[Attachment]
 
 @dataclass
 class Stack:
@@ -63,10 +68,6 @@ class Board:
     color: str
     labels: List[Label]
     stacks: Stack
-
-
-# TODO: Assign correct users
-
 
 def get_checklist_by_card(checklists, card_id):
     checklists = filter(lambda checklist: checklist.idCard == card_id, checklists)
@@ -120,7 +121,8 @@ def get_cards_by_stack(cards, checklists, actions, labels, trello_stack_id):
                     get_checklist_by_card(checklists, card.id),
                     get_label_ids(labels, card.idLabels),
                     card.shortUrl,
-                    get_comments_by_card(actions, card.id)
+                    get_comments_by_card(actions, card.id),
+                    list(map(lambda attachment: Attachment(attachment.fileName, attachment.url, attachment.mimeType), card.attachments))
                 ),
                 cards,
             ),

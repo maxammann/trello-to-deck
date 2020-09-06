@@ -6,6 +6,13 @@ from types import SimpleNamespace
 from trello_to_deck.deck import DeckAPI
 from trello_to_deck.trello import to_board, Board
 
+import os
+import tempfile
+import hashlib
+import requests
+from urllib.parse import urlparse
+import shutil
+
 parser = argparse.ArgumentParser(
     description="Parses a Trello export and creates boards in Nextcloud Deck"
 )
@@ -81,7 +88,17 @@ with open(args.input_json, "r") as json_file:
                 api.assignLabel(nextcloudLabelIds[label.trelloId], nextcloudCardId, nextcloudBoardId, nextcloudStackId)
                 print('\t\tAssigned label %s to card %s' % (label.name, card.name))
 
-            # if card.archived:
-            #     api.archiveCard(createdCard, nextcloudBoardId, nextcloudCardId)
+            if card.attachments:
+                #with tempfile.TemporaryDirectory() as tmpdirname:
+                #tmpdirname = tempfile.TemporaryDirectory()
+                if True:
+                    #print(tmpdirname)
+                    for attachment in card.attachments:
+                        url = attachment.url
+                        response = requests.get(url, stream=True)
+                        api.attachToCard(nextcloudBoardId, nextcloudStackId, nextcloudCardId, attachment.fileName, response.raw, attachment.mimeType)
+
+            if card.archived:
+                api.archiveCard(createdCard, nextcloudBoardId, nextcloudCardId)
     print("Successfully migrated to Deck!")
 

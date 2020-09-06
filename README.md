@@ -37,6 +37,7 @@ You have to provde the arguments `input_json` e.g. `trello.json`, `nextcloud_ins
 * Due-date
 * Order of Stacks, Cards, Checklists etc.
 * Link/Reference to the original trello card (as comment)
+* Comments on cards: https://github.com/maxammann/trello-to-deck/issues/4
 
 ## MUST READ: What is NOT migrated?
 
@@ -45,5 +46,4 @@ You have to provde the arguments `input_json` e.g. `trello.json`, `nextcloud_ins
 * Assigning the correct people on the cards. Only the creating account is assigned right now: https://github.com/maxammann/trello-to-deck/issues/7 https://github.com/maxammann/trello-to-deck/issues/6
 * Attachments: https://github.com/maxammann/trello-to-deck/issues/2
 * Votes: https://github.com/maxammann/trello-to-deck/issues/3
-* Comments on cards: https://github.com/maxammann/trello-to-deck/issues/4
 * Background: https://github.com/maxammann/trello-to-deck/issues/5
