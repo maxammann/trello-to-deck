@@ -47,3 +47,4 @@ You have to provde the arguments `input_json` e.g. `trello.json`, `nextcloud_ins
 * Assigning the correct people on the cards. Only the creating account is assigned right now: https://github.com/maxammann/trello-to-deck/issues/7 https://github.com/maxammann/trello-to-deck/issues/6
 * Votes: https://github.com/maxammann/trello-to-deck/issues/3
 * Background: https://github.com/maxammann/trello-to-deck/issues/5
+* Cards of archived stacks: https://github.com/maxammann/trello-to-deck/issues/10
