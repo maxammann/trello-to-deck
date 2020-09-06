@@ -15,7 +15,9 @@ pip install .
 
 ## Usage example
 
-Simply invoke the CLI tool `trello-to-deck`:
+First get a JSON export of your Trello board AS described [here](https://help.trello.com/article/747-exporting-data-from-trello-1) and save it as trello.json
+
+Then simply invoke the CLI tool `trello-to-deck`:
 
 ```console
 # trello-to-deck
