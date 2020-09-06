@@ -98,7 +98,7 @@ def get_checklist_by_card(checklists, card_id):
 
 def get_comments_by_card(actions, trello_card_id):
     commentCardActions = filter(lambda action: action.type == 'commentCard' and action.data.card.id == trello_card_id, actions)
-    comments = map(lambda action: action.data.text, commentCardActions)
+    comments = list(map(lambda action: action.data.text, commentCardActions))
     return comments
 
 def get_label_ids(labels, label_ids):
