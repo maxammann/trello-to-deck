@@ -26,6 +26,10 @@ parser.add_argument("username", type=str, help="the Nextcloud username")
 parser.add_argument("password", type=str, help="the Nextcloud password")
 args = parser.parse_args()
 
+MAX_TITLE_LENGTH = 100
+
+def truncate(message, length):
+    return message if len(message) <= length else message[:length - 1] + "…"
 
 with open(args.input_json, "r") as json_file:
     board: Board = to_board(
@@ -39,7 +43,7 @@ with open(args.input_json, "r") as json_file:
 
     api = DeckAPI(args.nextcloud_instance, (args.username, args.password))
 
-    createdBoard = api.createBoard(board.title, board.color)
+    createdBoard = api.createBoard(truncate(board.title, MAX_TITLE_LENGTH), board.color)
     nextcloudBoardId = createdBoard['id']
     print('Created board %s at %s' % (createdBoard['title'], "%s/index.php/apps/deck/#/board/%d" % (args.nextcloud_instance, nextcloudBoardId)))
 
@@ -52,11 +56,12 @@ with open(args.input_json, "r") as json_file:
 
 
     for stack in board.stacks:
-        createdStack = api.createStack(stack.name, stack.order, nextcloudBoardId)
+        createdStack = api.createStack(truncate(stack.name, MAX_TITLE_LENGTH), stack.order, nextcloudBoardId)
         nextcloudStackId = createdStack['id']
         print('Created stack %s' % stack.name)
 
         for card in stack.cards:
+            # TODO: make this configurable
             if card.archived and (not card.checklists and card.description == "" and not card.attachments and not card.comments):
                 continue
 
@@ -76,11 +81,11 @@ with open(args.input_json, "r") as json_file:
                     checklistMarkdown += "\n"
 
             migrationText = "Migrated from Trello: %s\n\n" % card.trelloUrl
-            createdCard = api.createCard(card.name, "plain", card.order, "%s%s%s" % (migrationText, card.description, checklistMarkdown), card.due_date, nextcloudBoardId, nextcloudStackId)
+            createdCard = api.createCard(truncate(card.name, MAX_TITLE_LENGTH), "plain", card.order, "%s%s%s" % (migrationText, card.description, checklistMarkdown), card.due_date, nextcloudBoardId, nextcloudStackId)
             nextcloudCardId = createdCard['id']
 
             for comment in card.comments:
-                api.commentOnCard(nextcloudCardId, comment)
+                api.commentOnCard(nextcloudCardId, truncate(comment, 1000))
 
             print('\tCreated card %s' % card.name)
             
