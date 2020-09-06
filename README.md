@@ -38,12 +38,12 @@ You have to provde the arguments `input_json` e.g. `trello.json`, `nextcloud_ins
 * Order of Stacks, Cards, Checklists etc.
 * Link/Reference to the original trello card (as comment)
 * Comments on cards: https://github.com/maxammann/trello-to-deck/issues/4
-
+* Attachments: https://github.com/maxammann/trello-to-deck/issues/2
+* 
 ## MUST READ: What is NOT migrated?
 
 * Creating archived cards: https://github.com/maxammann/trello-to-deck/issues/1
   I have over 2000 archived cards in my personal Trello. Right now Deck can not handle this amount. Therefore currenlty no archived cards are migrated!
 * Assigning the correct people on the cards. Only the creating account is assigned right now: https://github.com/maxammann/trello-to-deck/issues/7 https://github.com/maxammann/trello-to-deck/issues/6
-* Attachments: https://github.com/maxammann/trello-to-deck/issues/2
 * Votes: https://github.com/maxammann/trello-to-deck/issues/3
 * Background: https://github.com/maxammann/trello-to-deck/issues/5
