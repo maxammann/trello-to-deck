@@ -75,7 +75,7 @@ with open(args.input_json, "r") as json_file:
 
                     checklistMarkdown += "\n"
 
-            migrationText = "Migrated from Trello: %s\n" % card.trelloUrl
+            migrationText = "Migrated from Trello: %s\n\n" % card.trelloUrl
             createdCard = api.createCard(card.name, "plain", card.order, "%s%s%s" % (migrationText, card.description, checklistMarkdown), card.due_date, nextcloudBoardId, nextcloudStackId)
             nextcloudCardId = createdCard['id']
 
@@ -96,6 +96,6 @@ with open(args.input_json, "r") as json_file:
 
             if card.archived:
                 api.archiveCard(createdCard, nextcloudBoardId, nextcloudCardId)
-                
+
     print("Successfully migrated to Deck!")
 
