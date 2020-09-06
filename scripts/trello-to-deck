@@ -32,8 +32,9 @@ def truncate(message, length):
     return message if len(message) <= length else message[:length - 1] + "…"
 
 with open(args.input_json, "r") as json_file:
+    json_string = json_file.read()
     board: Board = to_board(
-        json.loads(json_file.read(), object_hook=lambda d: SimpleNamespace(**d))
+        json.loads(json_string, object_hook=lambda d: SimpleNamespace(**d))
     )
 
     print("Found:")
@@ -96,11 +97,17 @@ with open(args.input_json, "r") as json_file:
             if card.attachments:
                 for attachment in card.attachments:
                     url = attachment.url
+                    print(f'\t\tAtaching {url} to card {card.name}')
                     response = requests.get(url, stream=True)
                     api.attachToCard(nextcloudBoardId, nextcloudStackId, nextcloudCardId, attachment.fileName, response.raw, attachment.mimeType)
 
             if card.archived:
                 api.archiveCard(createdCard, nextcloudBoardId, nextcloudCardId)
+
+    nextcloudStackId = api.getStacks(nextcloudBoardId)[0]['id']
+    createdCard = api.createCard("Trello Migration", "plain", 0, "This card contains the Trello JSON from this this board was migrated from.", None, nextcloudBoardId, nextcloudStackId)
+    nextcloudCardId = createdCard['id']
+    api.attachToCard(nextcloudBoardId, nextcloudStackId, nextcloudCardId, f"{board.title}.json", json_string.encode(), "application/json")
 
     print("Successfully migrated to Deck!")
 
