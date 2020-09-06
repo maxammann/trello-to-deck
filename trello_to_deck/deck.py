@@ -1,6 +1,6 @@
 import requests
 
-headers = {"OCS-APIRequest": "true", "Content-Type": "application/json"}
+headers = {"OCS-APIRequest": "true"}
 
 # The API is implemented as documented here: https://deck.readthedocs.io/en/latest/API/
 class DeckAPI:
@@ -22,6 +22,17 @@ class DeckAPI:
             f"{self.url}{route}",
             auth=self.auth,
             json=json,
+            headers=headers,
+        )
+        response.raise_for_status()
+        return response
+
+    def postFiles(self, route, data, files):
+        response = requests.post(
+            f"{self.url}{route}",
+            auth=self.auth,
+            data=data,
+            files=files,
             headers=headers,
         )
         response.raise_for_status()
@@ -105,7 +116,7 @@ class DeckAPI:
 
     def archiveCard(self, card, boardId, stackId):
         self.put(
-            f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/{stackId}/cards/{cardId}",
+            f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/{stackId}/cards/{card['id']}",
             card,
         )
 
@@ -113,4 +124,11 @@ class DeckAPI:
         self.post(
             f"/ocs/v2.php/apps/deck/api/v1.0/cards/{cardId}/comments",
             {"message": message, "parentId": parentId},
+        )
+
+    def attachToCard(self, boardId, stackId, cardId, fileName, fileObject, mimeType):
+        self.postFiles(
+            f"/index.php/apps/deck/api/v1.0/boards/{boardId}/stacks/{stackId}/cards/{cardId}/attachments",
+            {"type": "deck_file"},
+            {"file": (fileName, fileObject, mimeType)},
         )
