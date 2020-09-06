@@ -39,7 +39,7 @@ You have to provde the arguments `input_json` e.g. `trello.json`, `nextcloud_ins
 * Link/Reference to the original trello card (as comment)
 * Comments on cards: https://github.com/maxammann/trello-to-deck/issues/4
 * Attachments: https://github.com/maxammann/trello-to-deck/issues/2
-* 
+  
 ## MUST READ: What is NOT migrated?
 
 * Creating archived cards: https://github.com/maxammann/trello-to-deck/issues/1
@@ -48,3 +48,4 @@ You have to provde the arguments `input_json` e.g. `trello.json`, `nextcloud_ins
 * Votes: https://github.com/maxammann/trello-to-deck/issues/3
 * Background: https://github.com/maxammann/trello-to-deck/issues/5
 * Cards of archived stacks: https://github.com/maxammann/trello-to-deck/issues/10
+  
