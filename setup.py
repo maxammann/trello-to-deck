@@ -1,9 +1,9 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name='trello-to-deck',
     version='0.1',
-    packages=find_packages(where='trello-to-deck'),
+    packages=['trello_to_deck'],
     url='https://github.com/maxammann/trello-to-deck',
     license='MIT',
     author='maxammann',
