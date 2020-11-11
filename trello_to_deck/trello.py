@@ -13,6 +13,7 @@ color_map = {
     "lime": "9efd38",
     "pink": "c09da4",
     "black": "000000",
+    None: "b3bac5"
 }
 
 
