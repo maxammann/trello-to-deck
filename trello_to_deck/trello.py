@@ -166,7 +166,7 @@ def to_board(trello_json):
         else:
             background_color = color_map[None] 
     except KeyError:
-        background_color = "green"
+        background_color = color_map[None]
 
 
     return Board(
