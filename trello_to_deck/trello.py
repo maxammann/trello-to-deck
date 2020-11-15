@@ -159,7 +159,10 @@ def to_board(trello_json):
     # If background has 24 chars then it is an images
     try:
         if len(trello_json.prefs.background) != 24:
-            background_color = color_map[trello_json.prefs.background] 
+            try:
+                background_color = color_map[trello_json.prefs.background] 
+            except KeyError:
+....
         else:
             background_color = "green"
     except KeyError:
