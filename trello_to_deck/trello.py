@@ -3,6 +3,7 @@ from typing import List
 import dateutil.parser
 
 color_map = {
+    "default": "0082c9",
     "green": "49b675",
     "yellow": "FFFF00",
     "orange": "FFA500",
@@ -12,7 +13,7 @@ color_map = {
     "sky": "87ceeb",
     "lime": "9efd38",
     "pink": "c09da4",
-    "black": "000000",
+    "black": "000000"
 }
 
 
@@ -132,12 +133,16 @@ def get_cards_by_stack(cards, checklists, actions, labels, trello_stack_id):
 
 
 def to_board(trello_json):
-    labels = list(
-        map(
-            lambda tuple: Label(tuple[1].id, tuple[1].name if len(tuple[1].name) > 0 else "Label %d" % (tuple[0] + 1), color_map[tuple[1].color]),
-            enumerate(trello_json.labels),
-        )
-    )
+    labels = []
+    for i, json_label in enumerate(trello_json.labels):
+        label_name = json_label.name if len(json_label.name) > 0 else f"Label {i+1}"
+
+        try:
+            label_color = color_map[json_label.color]
+        except KeyError:
+            label_color = color_map["default"]
+
+        labels.append(Label(json_label.id, label_name, label_color))
 
     not_closed_stacks = filter(lambda stack: not stack.closed, trello_json.lists)
     lists = list(
@@ -161,9 +166,9 @@ def to_board(trello_json):
         try:
             background_color = color_map[trello_json.prefs.background] 
         except KeyError:
-            background_color = color_map[None] 
+            background_color = color_map["default"] 
     else:
-        background_color = color_map[None] 
+        background_color = color_map["default"] 
 
     return Board(
         trello_json.name, background_color, labels, lists
