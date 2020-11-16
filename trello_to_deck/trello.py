@@ -166,9 +166,9 @@ def to_board(trello_json):
         try:
             background_color = color_map[trello_json.prefs.background] 
         except KeyError:
-            background_color = color_map[None] 
+            background_color = color_map["default"] 
     else:
-        background_color = color_map[None] 
+        background_color = color_map["default"] 
 
     return Board(
         trello_json.name, background_color, labels, lists
