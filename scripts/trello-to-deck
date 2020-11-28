@@ -104,7 +104,7 @@ with open(args.input_json, "r") as json_file:
                     url = attachment.url
                     print(f'\t\tAtaching {url} to card {card.name}')
                     response = requests.get(url, stream=True)
-                    api.attachToCard(nextcloudBoardId, nextcloudStackId, nextcloudCardId, attachment.fileName, response.raw, attachment.mimeType)
+                    api.attachToCard(nextcloudBoardId, nextcloudStackId, nextcloudCardId, f"{attachment.date}-{attachment.fileName}", response.raw, attachment.mimeType)
 
             if card.archived:
                 api.archiveCard(createdCard, nextcloudBoardId, nextcloudCardId)
