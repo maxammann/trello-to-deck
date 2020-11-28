@@ -44,6 +44,11 @@ with open(args.input_json, "r") as json_file:
 
     api = DeckAPI(args.nextcloud_instance, (args.username, args.password))
 
+    compatibility = api.getCompatibility()
+    if compatibility is not None:
+        print(compatibility)
+        exit(1)
+
     createdBoard = api.createBoard(truncate(board.title, MAX_TITLE_LENGTH), board.color)
     nextcloudBoardId = createdBoard['id']
     print('Created board %s at %s' % (createdBoard['title'], "%s/index.php/apps/deck/#/board/%d" % (args.nextcloud_instance, nextcloudBoardId)))
@@ -89,7 +94,7 @@ with open(args.input_json, "r") as json_file:
                 api.commentOnCard(nextcloudCardId, truncate(comment, 1000))
 
             print('\tCreated card %s' % card.name)
-            
+
             for label in card.labels:
                 api.assignLabel(nextcloudLabelIds[label.trelloId], nextcloudCardId, nextcloudBoardId, nextcloudStackId)
                 print('\t\tAssigned label %s to card %s' % (label.name, card.name))

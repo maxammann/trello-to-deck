@@ -1,6 +1,8 @@
 import requests
+from packaging import version
 
 headers = {"OCS-APIRequest": "true"}
+
 
 # The API is implemented as documented here: https://deck.readthedocs.io/en/latest/API/
 class DeckAPI:
@@ -64,10 +66,26 @@ class DeckAPI:
         )
 
         if response.status_code != requests.codes.ok:
-            print(f"The response was: {response.conten}")
+            print(f"The response was: {response.content}")
             response.raise_for_status()
 
         return response
+
+    def getCompatibility(self):
+        result = self.get("/ocs/v1.php/cloud/capabilities?format=json").json()
+
+        if result['ocs']['meta']['status'] != 'ok':
+            return 'The compatibility check failed'
+
+        deck = result['ocs']['data']['capabilities']['deck']
+
+        if deck is None:
+            return 'Please install deck on your nextcloud instance'
+
+        if version.parse(deck['version']) < version.parse('1.1.0'):
+            return 'This script only supports version 1.1.0 and above'
+
+        return None
 
     def getBoards(self):
         return self.get(f"/index.php/apps/deck/api/v1.0/boards").json()
