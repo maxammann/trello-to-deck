@@ -12,6 +12,7 @@ setup(
     install_requires=[
         'requests>=2.0.0',
         'python-dateutil>=2.0.0',
+        'packaging>=20.5'
     ],
     scripts=['scripts/trello-to-deck'],
     python_requires='>=3.7',
