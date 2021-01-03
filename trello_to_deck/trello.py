@@ -82,7 +82,7 @@ def get_checklist_by_card(checklists, card_id):
                         sorted(
                             map(
                                 lambda item: ChecklistItem(
-                                    item.name, item.state == "completed", item.pos
+                                    item.name, item.state == "complete", item.pos
                                 ),
                                 checklist.checkItems,
                             ),
