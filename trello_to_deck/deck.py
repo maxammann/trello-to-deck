@@ -77,10 +77,12 @@ class DeckAPI:
         if result['ocs']['meta']['status'] != 'ok':
             return 'The compatibility check failed'
 
-        deck = result['ocs']['data']['capabilities']['deck']
+        capabilities = result['ocs']['data']['capabilities']
 
-        if deck is None:
+        if 'deck' not in capabilities:
             return 'Please install deck on your nextcloud instance'
+
+        deck = capabilities['deck']
 
         if version.parse(deck['version']) < version.parse('1.1.0'):
             return 'This script only supports version 1.1.0 and above'
