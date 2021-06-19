@@ -31,7 +31,7 @@ MAX_TITLE_LENGTH = 100
 def truncate(message, length):
     return message if len(message) <= length else message[:length - 1] + "…"
 
-with open(args.input_json, "r") as json_file:
+with open(args.input_json, "r", encoding='UTF-8') as json_file:
     json_string = json_file.read()
     board: Board = to_board(
         json.loads(json_string, object_hook=lambda d: SimpleNamespace(**d))
