@@ -1,3 +1,5 @@
+**Deck officially introduced in [v1.7.0-beta.1](https://github.com/nextcloud/deck/releases/tag/v1.7.0-beta.1) a feature to import from Trello: [deck#3182](https://github.com/nextcloud/deck/pull/3182). I did not test this new feature, but I would assume that this project is now deprecated.**
+
 # trello-to-deck
 > Move to the bright side!
 
